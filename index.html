@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Task Master Pro</title>
+    <!-- 
+        Section: CSS Styles 
+        Modern, Responsive, and Clean UI Design 
+    -->
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #f43f5e;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg-app: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --border: #e2e8f0;
+            --radius: 12px;
+            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            line-height: 1.6;
+            padding: env(safe-area-inset-top) 16px 40px 16px;
+        }
+
+        .container {
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        /* Header Section */
+        header {
+            padding: 32px 0 24px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            background: linear-gradient(to right, var(--primary), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .stats-summary {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+
+        /* Input Card Section */
+        .input-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .input-group {
+            margin-bottom: 12px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 16px; /* Prevents iOS zoom */
+            outline: none;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Filter & Options Section */
+        .controls {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            margin-bottom: 16px;
+        }
+
+        .filter-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .filter-group {
+            display: flex;
+            background: #e2e8f0;
+            padding: 4px;
+            border-radius: 10px;
+            gap: 2px;
+        }
+
+        .filter-btn {
+            border: none;
+            background: transparent;
+            padding: 6px 14px;
+            border-radius: 7px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--text-sub);
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .option-toggle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* Task List Section */
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 14px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .task-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .task-item::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 5px;
+        }
+
+        .priority-high::before { background: var(--accent); }
+        .priority-medium::before { background: var(--warning); }
+        .priority-low::before { background: var(--success); }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: flex-start;
+            padding-top: 2px;
+        }
+
+        .custom-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .task-item.completed .custom-checkbox {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .task-item.completed .custom-checkbox::after {
+            content: '✓';
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .task-body {
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .task-item.completed .task-title {
+            text-decoration: line-through;
+            color: var(--text-sub);
+            opacity: 0.7;
+        }
+
+        .task-desc {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .task-footer {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            background: #f1f5f9;
+            color: var(--text-sub);
+        }
+
+        .badge-today {
+            background: #fff1f2;
+            color: var(--accent);
+            border: 1px solid #fecdd3;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .task-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 6px;
+            color: var(--text-sub);
+            transition: all 0.2s;
+        }
+
+        .icon-btn:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .icon-btn.delete:hover {
+            color: var(--accent);
+            background: #fff1f2;
+        }
+
+        /* Modal Section */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 460px;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .modal-header {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-sub);
+        }
+
+        .empty-state p {
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8rem; }
+            .input-card { padding: 16px; }
+            .input-row { grid-template-columns: 1fr; }
+            .filter-row { flex-direction: column; align-items: flex-start; }
+            .filter-group { width: 100%; justify-content: space-between; }
+            .filter-btn { flex: 1; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Task Master Pro</h1>
+        <div class="stats-summary">
+            남은 할 일: <span id="remainingCount">0</span>개
+        </div>
+    </header>
+
+    <!-- Section: Input Form -->
+    <section class="input-card">
+        <div class="input-group">
+            <input type="text" id="taskTitle" placeholder="무엇을 해야 하나요? (Enter로 추가)" autocomplete="off">
+        </div>
+        <div class="input-group">
+            <textarea id="taskDesc" placeholder="상세 설명 (선택 사항)" rows="2"></textarea>
+        </div>
+        <div class="input-row">
+            <input type="date" id="taskDueDate">
+            <select id="taskPriority">
+                <option value="low">낮음 (Low)</option>
+                <option value="medium" selected>보통 (Medium)</option>
+                <option value="high">높음 (High)</option>
+            </select>
+        </div>
+        <button class="btn-primary" id="addTaskBtn">
+            <span>할 일 추가하기</span>
+        </button>
+    </section>
+
+    <!-- Section: Controls -->
+    <section class="controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="검색어를 입력하세요...">
+        </div>
+        <div class="filter-row">
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">전체</button>
+                <button class="filter-btn" data-filter="pending">미완료</button>
+                <button class="filter-btn" data-filter="completed">완료</button>
+            </div>
+            <label class="option-toggle">
+                <input type="checkbox" id="hideCompletedToggle">
+                <span>완료된 항목 숨기기</span>
+            </label>
+        </div>
+    </section>
+
+    <!-- Section: Task List -->
+    <ul id="taskList" class="task-list">
+        <!-- Dynamic Content -->
+    </ul>
+</div>
+
+<!-- Section: Edit Modal -->
+<div id="editModal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>할 일 수정</h3>
+        </div>
+        <input type="hidden" id="editTaskId">
+        <div class="input-group">
+            <label style="font-size: 0.8rem; color: var(--text-sub);">제목</label>
+            <input type="text" id="editTitle">
+        </div>
+        <div class="input-group">
+            <label style="font-size: 0.8rem; color: var(--text-sub);">설명</label>
+            <textarea id="editDesc" rows="3"></textarea>
+        </div>
+        <div class="input-row">
+            <div>
+                <label style="font-size: 0.8rem; color: var(--text-sub);">마감일</label>
+                <input type="date" id="editDate">
+            </div>
+            <div>
+                <label style="font-size: 0.8rem; color: var(--text-sub);">우선순위</label>
+                <select id="editPriority">
+                    <option value="low">낮음</option>
+                    <option value="medium">보통</option>
+                    <option value="high">높음</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-ghost" onclick="closeModal()">취소</button>
+            <button class="btn-primary" style="width: auto; padding: 10px 24px;" onclick="saveEdit()">저장하기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 
+    Section: JavaScript Logic 
+    Optimized State Management and Interaction
+-->
+<script>
+    // --- State & Constants ---
+    let tasks = JSON.parse(localStorage.getItem('tasks_pro_v1')) || [];
+    let state = {
+        filter: 'all',
+        search: '',
+        hideCompleted: false
+    };
+
+    const DOM = {
+        taskList: document.getElementById('taskList'),
+        taskTitle: document.getElementById('taskTitle'),
+        taskDesc: document.getElementById('taskDesc'),
+        taskDueDate: document.getElementById('taskDueDate'),
+        taskPriority: document.getElementById('taskPriority'),
+        addTaskBtn: document.getElementById('addTaskBtn'),
+        searchInput: document.getElementById('searchInput'),
+        remainingCount: document.getElementById('remainingCount'),
+        hideCompletedToggle: document.getElementById('hideCompletedToggle'),
+        filterBtns: document.querySelectorAll('.filter-btn'),
+        modal: document.getElementById('editModal')
+    };
+
+    // --- Core Functions ---
+
+    function init() {
+        render();
+        bindEvents();
+    }
+
+    function save() {
+        localStorage.setItem('tasks_pro_v1', JSON.stringify(tasks));
+        render();
+    }
+
+    function bindEvents() {
+        // Add Task
+        DOM.addTaskBtn.addEventListener('click', addTask);
+        
+        // Enter Key Support
+        [DOM.taskTitle, DOM.taskDesc, DOM.taskDueDate].forEach(el => {
+            el.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    addTask();
+                }
+            });
+        });
+
+        // Search
+        DOM.searchInput.addEventListener('input', (e) => {
+            state.search = e.target.value.toLowerCase();
+            render();
+        });
+
+        // Filters
+        DOM.filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                DOM.filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.filter = btn.dataset.filter;
+                render();
+            });
+        });
+
+        // Toggle Hide Completed
+        DOM.hideCompletedToggle.addEventListener('change', (e) => {
+            state.hideCompleted = e.target.checked;
+            render();
+        });
+
+        // Modal Close on Overlay
+        DOM.modal.addEventListener('click', (e) => {
+            if (e.target === DOM.modal) closeModal();
+        });
+    }
+
+    function addTask() {
+        const title = DOM.taskTitle.value.trim();
+        if (!title) {
+            DOM.taskTitle.focus();
+            return;
+        }
+
+        const newTask = {
+            id: Date.now(),
+            title,
+            description: DOM.taskDesc.value.trim(),
+            dueDate: DOM.taskDueDate.value,
+            priority: DOM.taskPriority.value,
+            status: 'pending',
+            createdAt: new Date().toISOString()
+        };
+
+        tasks.unshift(newTask);
+        
+        // Reset Inputs
+        DOM.taskTitle.value = '';
+        DOM.taskDesc.value = '';
+        DOM.taskDueDate.value = '';
+        DOM.taskPriority.value = 'medium';
+        
+        save();
+    }
+
+    function toggleTask(id) {
+        tasks = tasks.map(t => t.id === id ? { ...t, status: t.status === 'completed' ? 'pending' : 'completed' } : t);
+        save();
+    }
+
+    function deleteTask(id) {
+        if (confirm('이 할 일을 삭제할까요?')) {
+            tasks = tasks.filter(t => t.id !== id);
+            save();
+        }
+    }
+
+    // --- UI Rendering ---
+
+    function render() {
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Filter Logic
+        let filtered = tasks.filter(t => {
+            const matchesFilter = state.filter === 'all' || t.status === state.filter;
+            const matchesSearch = t.title.toLowerCase().includes(state.search) || t.description.toLowerCase().includes(state.search);
+            const matchesHide = !state.hideCompleted || t.status !== 'completed';
+            return matchesFilter && matchesSearch && matchesHide;
+        });
+
+        // Update Remaining Count
+        const remaining = tasks.filter(t => t.status === 'pending').length;
+        DOM.remainingCount.textContent = remaining;
+
+        // Render List
+        DOM.taskList.innerHTML = '';
+        
+        if (filtered.length === 0) {
+            DOM.taskList.innerHTML = `
+                <div class="empty-state">
+                    <p>${state.search ? '검색 결과가 없습니다.' : '할 일이 없습니다. 새로운 작업을 추가해보세요!'}</p>
+                </div>
+            `;
+            return;
+        }
+
+        filtered.forEach(task => {
+            const isToday = task.dueDate === today;
+            const item = document.createElement('li');
+            item.className = `task-item priority-${task.priority} ${task.status === 'completed' ? 'completed' : ''}`;
+            
+            item.innerHTML = `
+                <div class="checkbox-wrapper">
+                    <div class="custom-checkbox" onclick="toggleTask(${task.id})"></div>
+                </div>
+                <div class="task-body">
+                    <div class="task-title">${escapeHtml(task.title)}</div>
+                    ${task.description ? `<div class="task-desc">${escapeHtml(task.description)}</div>` : ''}
+                    <div class="task-footer">
+                        <span class="badge">${task.priority.toUpperCase()}</span>
+                        ${task.dueDate ? `<span class="badge ${isToday ? 'badge-today' : ''}">${isToday ? '🔥 오늘까지' : '📅 ' + task.dueDate}</span>` : ''}
+                    </div>
+                </div>
+                <div class="task-actions">
+                    <button class="icon-btn" onclick="openEditModal(${task.id})">✏️</button>
+                    <button class="icon-btn delete" onclick="deleteTask(${task.id})">🗑️</button>
+                </div>
+            `;
+            DOM.taskList.appendChild(item);
+        });
+    }
+
+    // --- Modal Logic ---
+
+    function openEditModal(id) {
+        const task = tasks.find(t => t.id === id);
+        if (!task) return;
+
+        document.getElementById('editTaskId').value = task.id;
+        document.getElementById('editTitle').value = task.title;
+        document.getElementById('editDesc').value = task.description;
+        document.getElementById('editDate').value = task.dueDate;
+        document.getElementById('editPriority').value = task.priority;
+
+        DOM.modal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        DOM.modal.style.display = 'none';
+    }
+
+    function saveEdit() {
+        const id = parseInt(document.getElementById('editTaskId').value);
+        const title = document.getElementById('editTitle').value.trim();
+        
+        if (!title) return;
+
+        tasks = tasks.map(t => t.id === id ? {
+            ...t,
+            title,
+            description: document.getElementById('editDesc').value.trim(),
+            dueDate: document.getElementById('editDate').value,
+            priority: document.getElementById('editPriority').value
+        } : t);
+
+        closeModal();
+        save();
+    }
+
+    // --- Utilities ---
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Start
+    init();
+</script>
+
+</body>
+</html>
+
